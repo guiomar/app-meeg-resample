@@ -19,16 +19,27 @@ with open(__location__+'/config.json') as config_json:
     config = json.load(config_json)
 
 
-fname = config['epo']
+# == LOAD DATA ==
+fname = config['mne']
+raw = mne.io.read_raw(fname)
 
+# == GET CONFIG VALUES ==
 
-# COPY THE METADATA CHANNELS.TSV, COORDSYSTEM, ETC ==============================
+sfreq   = config['sfreq']
 
+# Advanced parameters
+npad   = config['npad'] if config['npad'] else 'auto'
+window = config['window'] if config['window'] else 'boxcar'
+pad    = config['pad'] if config['pad'] else 'reflect_limited'
+events = config['events'] if config['events'] else 'None'
+stim_picks = config['stim_picks'] if config['stim_picks'] else 'None'
 
-epochs = mne.read_epochs(fname)
-epochs.interpolate_bads()
+n_jobs = 1
+verbose=None
 
+# == RESAMPLE ==
 
-# save mne/epochs
-epochs.save(os.path.join('out_dir','meg-epo.fif'))
+raw.resample(sfreq, npad, window, stim_picks, n_jobs, events, pad, verbose)
 
+# save mne/raw
+raw.save(os.path.join('out_dir','raw.fif'))
