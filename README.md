@@ -5,7 +5,7 @@
 
 
 ## Documentation
-This Brainlife App resamples all channels.
+This Brainlife App resamples all channels of a M/EEG MNE fif file.
 
 
 ## Authors
